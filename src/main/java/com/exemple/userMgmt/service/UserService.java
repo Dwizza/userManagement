@@ -2,36 +2,51 @@ package com.exemple.userMgmt.service;
 
 
 import com.exemple.userMgmt.domain.User;
+import com.exemple.userMgmt.dto.UserDtoRequest;
+import com.exemple.userMgmt.dto.UserDtoResponse;
+import com.exemple.userMgmt.mapper.UserMapper;
 import com.exemple.userMgmt.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService {
 
-    @Autowired
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
-    public User createUser(User user){
-        return userRepository.save(user);
+    public UserDtoResponse createUser(UserDtoRequest dto){
+        User toSave = UserMapper.toEntity(dto);
+        User saved = userRepository.save(toSave);
+        return userMapper.toDto(saved);
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public List<UserDtoResponse> getAllUsers(){
+        List<User> users = userRepository.findAll();
+        List<UserDtoResponse> responses = new ArrayList<>();
+        for (User user : users) {
+            responses.add(userMapper.toDto(user));
+        }
+        return responses;
     }
 
-    public User updateUser(Long id, User userDetails) {
+    public UserDtoResponse updateUser(Long id, UserDtoRequest dto) {
         User existing = userRepository.findById(id).orElse(null);
         if (existing != null) {
-            existing.setName(userDetails.getName());
-            existing.setEmail(userDetails.getEmail());
-            return userRepository.save(existing);
+            existing.setName(dto.getName());
+            existing.setEmail(dto.getEmail());
+            existing.setPassword(dto.getPassword());
+            existing.setRole(dto.getRole());
+            existing.setActive(dto.getActive());
+            User saved = userRepository.save(existing);
+            return userMapper.toDto(saved);
         }
         return null;
     }

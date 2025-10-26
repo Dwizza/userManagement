@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@ComponentScan(basePackages = {"com.exemple.userMgmt.repository", "com.exemple.userMgmt.service"})
+@ComponentScan(basePackages = {"com.exemple.userMgmt.repository", "com.exemple.userMgmt.service", "com.exemple.userMgmt.mapper"})
 @EnableJpaRepositories(basePackages = "com.exemple.userMgmt.repository")
 @EnableTransactionManagement
 public class PersistenceConfig  {

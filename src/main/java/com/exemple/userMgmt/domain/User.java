@@ -31,7 +31,7 @@ public class User {
 
     @Column(nullable = false)
     private Boolean active = true;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
